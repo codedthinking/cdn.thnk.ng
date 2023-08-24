@@ -1,3 +1,5 @@
 date,name,location,host,type,presenter,title,slides_url,event_url,audience,funding
-2023-07-24,Salento Macro Meetings,"Lecce, Italy","Banque de France|Paris School of Economics",discussion,Koren,,https://github.com/korenmiklos/talks/blob/master/2023-07-24-salento-macro-meetings/README.pdf,https://sites.google.com/site/francescopappada/salento-macro-meetings,,host|Forefront
+2023-07-24,Salento Macro Meetings,"Lecce, Italy",Banque de France|Paris School of Economics,discussion,Koren,,https://github.com/korenmiklos/talks/blob/master/2023-07-24-salento-macro-meetings/README.pdf,https://sites.google.com/site/francescopappada/salento-macro-meetings,,host|Forefront
 2023-08-28,EEA Annual Congress,"Barcelona, Spain",EEA,workshop,Koren,Reproducible Research from Day 1,https://thnk.ng/day1/,https://eea-esem-2023.org/sessions/reproducible-research-day-1,,host
+2023-08-28,CEU ERC Workshop,online,CEU,workshop,Koren,Dos and don’ts for an ERC application,https://github.com/korenmiklos/talks/tree/master/2023-08-28-ceu,,,
+2023-09-14,REStud AGM,"Munich, Germany",Review of Economic Studies,workshop,Koren,Data Editor’s report 2023,https://github.com/REStud/report/blob/main/report.md,,,host
