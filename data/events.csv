@@ -1,5 +1,16 @@
-date,name,location,host,type,presenter,title,slides_url,event_url,audience,funding
-2023-07-24,Salento Macro Meetings,"Lecce, Italy",Banque de France|Paris School of Economics,discussion,Koren,,https://github.com/korenmiklos/talks/blob/master/2023-07-24-salento-macro-meetings/README.pdf,https://sites.google.com/site/francescopappada/salento-macro-meetings,,host|Forefront
-2023-08-28,EEA Annual Congress,"Barcelona, Spain",EEA,workshop,Koren,Reproducible Research from Day 1,https://thnk.ng/day1/,https://eea-esem-2023.org/sessions/reproducible-research-day-1,,host
-2023-08-28,CEU ERC Workshop,online,CEU,workshop,Koren,Dos and don’ts for an ERC application,https://github.com/korenmiklos/talks/tree/master/2023-08-28-ceu,,,
-2023-09-14,REStud AGM,"Munich, Germany",Review of Economic Studies,workshop,Koren,Data Editor’s report 2023,https://github.com/REStud/report/blob/main/report.md,,,host
+date,name,location,host,type,presenter,title,project,slides_url,event_url,audience,funding
+2023-05-02,OeNB workshop,"Vienna, Austria",Oesterrichische Nationalbank,workshop,Koren,Sudden Liberalization and the Baby Boom of Managers,babyboom,,,30,
+2023-07-03,Kiel workshop,"Kiel, Germany",,workshop,Lohmann,,goos,,,,
+2023-07-11,Bielefeld BigSEM,"Bielefeld, Germany",,conference,Lohmann,,goos,,,,
+2023-07-24,Salento Macro Meetings,"Lecce, Italy",Banque de France|Paris School of Economics,discussion,Koren,,,https://github.com/korenmiklos/talks/blob/master/2023-07-24-salento-macro-meetings/README.pdf,https://sites.google.com/site/francescopappada/salento-macro-meetings,,host|Forefront
+2023-08-28,EEA Annual Congress,"Barcelona, Spain",EEA,workshop,Koren,Reproducible Research from Day 1,,https://thnk.ng/day1/,https://eea-esem-2023.org/sessions/reproducible-research-day-1,70,host
+2023-08-28,CEU ERC Workshop,online,CEU,workshop,Koren,Dos and don’ts for an ERC application,,https://github.com/korenmiklos/talks/tree/master/2023-08-28-ceu,,20,
+2023-09-14,REStud AGM,"Munich, Germany",Review of Economic Studies,workshop,Koren,Data Editor’s report 2023,,https://github.com/REStud/report/blob/main/report.md,,60,host
+2023-09-16,ETSG,,,conference,Lohmann,,goos,,,,
+2023-10-06,18th ISGEP Workshop,"Pescara, Italy",,conference,Lohmann,,goos,,,,
+2023-10-12,KRTK workshop,"Budapest, Hungary",KRTK,workshop,Koren,Command Line and Version Control,,https://github.com/codedthinking/presentations/tree/main/2023-10-12-krtk,,10,
+2023-10-24,I4R workshop,online,Institute for Replication,workshop,Koren,Reproducible Research from Day 1,,https://thnk.ng/day1/,,10,
+2023-10-25,Corvinus seminar,"Budapest, Hungary",Corvinus University,seminar,Koren,The Macroeconomics of Managers,babyboom,https://github.com/korenmiklos/talks/tree/master/2023-10-25-corvinus,,50,
+2023-11-13,wiiw,"Vienna, Austria",wiiw,conference,Békés,,goos,,,,
+2023-12-13,Empirical Management Conference,"Palo Alto, USA",Stanford,conference,Koren,The Macroeconomics of Managers,babyboom,,,,host|Forefront
+2023-12-13,CEPR Paris Symposium,"Paris, France",CEPR,conference,Békés,,goos,,,,
