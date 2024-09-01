@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Miklós Koren (@korenmiklos)">
+  <meta name="author" content="Gergely Attila Kiss (@gergelyattilakiss)">
+  <title>A data analysis package for economists</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .title-slide {
+      position: relative;
+      text-align: center;
+    }
+    .title-slide .logo {
+      display: block;
+      margin: 0 auto;
+      width: 100px; /* Adjust as needed */
+      height: auto;
+      margin-bottom: 20px; /* Space between logo and title */
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var titleSlide = document.querySelector('.reveal .slides section:first-child');
+      if (titleSlide) {
+        var logo = document.createElement('img');
+        logo.src = 'assets/logo.svg';
+        logo.className = 'logo';
+        titleSlide.insertBefore(logo, titleSlide.firstChild);
+      };
+    });
+  </script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">A data analysis package for economists</h1>
+  <p class="author">Miklós Koren (<span class="citation"
+data-cites="korenmiklos">@korenmiklos</span>)</p>
+  <p class="author">Gergely Attila Kiss (<span class="citation"
+data-cites="gergelyattilakiss">@gergelyattilakiss</span>)</p>
+  <p class="date">JuliaCon 2024</p>
+</section>
+
+<section id="who-am-i" class="slide level2">
+<h2>Who am I?</h2>
+<h3
+id="help-economists-adopt-computing-best-practices-to-maximize-their-scientific-impact">Help
+economists adopt computing best practices to maximize their scientific
+impact</h3>
+<div class="columns">
+<div class="column" style="width:60%;">
+<table>
+<thead>
+<tr class="header">
+<th>Economist</th>
+<th>ceu.edu</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data editor</td>
+<td>restud.com</td>
+</tr>
+<tr class="even">
+<td>Developer</td>
+<td>thnk.ng</td>
+</tr>
+</tbody>
+</table>
+</div><div class="fragment column" style="width:40%;">
+<table>
+<thead>
+<tr class="header">
+<th>Stata®</th>
+<th>1997</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Python</td>
+<td>2003</td>
+</tr>
+<tr class="even">
+<td>Julia</td>
+<td>2015</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section>
+<section id="what-do-economists-do" class="title-slide slide level1">
+<h1>What do economists do?</h1>
+
+</section>
+<section id="they-dont-use-julia" class="slide level2">
+<h2>They don’t use Julia</h2>
+<p><img data-src="figures/languages.svg" /></p>
+</section>
+<section id="aspirations" class="slide level2">
+<h2>Aspirations</h2>
+<p><img data-src="figures/languages-MATLAB.svg" /></p>
+</section>
+<section id="what-is-stata" class="slide level2">
+<h2>What is Stata?</h2>
+<div class="columns">
+<div class="column">
+<h3 id="stata">Stata</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode stata"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;trade.dta&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">replace</span> distance = 5 <span class="kw">if</span> distance &lt; 5</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> log_trade = <span class="fu">log</span>(trade)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> log_distance = <span class="fu">log</span>(distance)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> log_trade log_distance, <span class="kw">robust</span></span></code></pre></div>
+</div><div class="column">
+<h3 id="vs">vs</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_stata(<span class="st">&quot;trade.dta&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df.loc[df[<span class="st">&#39;distance&#39;</span>] <span class="op">&lt;</span> <span class="dv">5</span>, <span class="st">&#39;distance&#39;</span>] <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;log_trade&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;trade&#39;</span>].<span class="bu">apply</span>(math.log)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;log_distance&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;distance&#39;</span>].</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">apply</span>(math.log)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(<span class="st">&#39;log_trade ~ log_distance&#39;</span>, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df).fit(cov_type<span class="op">=</span><span class="st">&#39;HC3&#39;</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code></pre></div>
+</div>
+</div>
+</section>
+<section id="the-vast-majority-of-commands-are-for-data-manipulation"
+class="slide level2">
+<h2>The vast majority of commands are for data manipulation</h2>
+<p><img data-src="figures/command_types.svg" /></p>
+</section></section>
+<section>
+<section id="tradeoffs-in-user-interface-design"
+class="title-slide slide level1">
+<h1>Tradeoffs in user interface design</h1>
+
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p><img data-src="assets/standards.png" /></p>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p><img data-src="assets/MadMen.png" /></p>
+</section>
+<section id="what-do-users-want" class="slide level2">
+<h2>What do users want?</h2>
+</section>
+<section id="the-production-possibilities-frontier"
+class="slide level2">
+<h2>The Production Possibilities Frontier</h2>
+<p><img data-src="figures/ppf-1.svg" /></p>
+</section>
+<section id="the-production-possibilities-frontier-1"
+class="slide level2">
+<h2>The Production Possibilities Frontier</h2>
+<p><img data-src="figures/ppf-4.svg" /></p>
+</section></section>
+<section>
+<section id="features-of-kezdi.jl" class="title-slide slide level1">
+<h1>Features of Kezdi.jl</h1>
+
+</section>
+<section id="command-syntax-is-approxexactly-like-in-stata"
+class="slide level2">
+<h2>Command syntax is <span class="math inline">≈</span>exactly like in
+Stata</h2>
+<div class="columns">
+<div class="column">
+<h3 id="stata-1">Stata</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode stata"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="st">&quot;trade.dta&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">replace</span> distance = 5 <span class="kw">if</span> distance &lt; 5</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> log_trade = <span class="fu">log</span>(trade)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">generate</span> log_distance = <span class="fu">log</span>(distance)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> log_trade log_distance, <span class="kw">robust</span></span></code></pre></div>
+</div><div class="column">
+<h3 id="kezdi.jl">Kezdi.jl</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@use</span> <span class="st">&quot;trade.dta&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@replace</span> distance <span class="op">=</span> <span class="fl">5</span> <span class="pp">@if</span> distance <span class="op">&lt;</span> <span class="fl">5</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@generate</span> log_trade <span class="op">=</span> <span class="fu">log</span>(trade)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="pp">@generate</span> log_distance <span class="op">=</span> <span class="fu">log</span>(distance)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="pp">@regress</span> log_trade log_distance, robust</span></code></pre></div>
+</div>
+</div>
+<div class="fragment">
+<h3 id="note">Note</h3>
+<ol type="1">
+<li>Every command is a macro. So is row-level <code>@if</code>. Options
+are given with <code>, option</code></li>
+<li>Variable names refer to column names in the <em>default</em>
+DataFrame</li>
+<li>Function calls are vectorized automatically</li>
+</ol>
+</div>
+</section>
+<section id="more-idiomatic-version-of-the-same-code"
+class="slide level2">
+<h2>More idiomatic version of the same code</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@use</span> <span class="st">&quot;trade.dta&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@replace</span> distance <span class="op">=</span> <span class="fl">5</span> <span class="pp">@if</span> distance <span class="op">&lt;</span> <span class="fl">5</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@generate</span> log_trade <span class="op">=</span> <span class="fu">log</span>(trade)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="pp">@generate</span> log_distance <span class="op">=</span> <span class="fu">log</span>(distance)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="pp">@regress</span> log_trade log_distance, robust</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="pp">@use</span> <span class="st">&quot;trade.dta&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> <span class="pp">@with</span> df <span class="cf">begin</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@replace</span> distance <span class="op">=</span> <span class="fl">5</span> <span class="pp">@if</span> distance <span class="op">&lt;</span> <span class="fl">5</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@regress</span> <span class="fu">log</span>(trade) <span class="fu">log</span>(distance), robust</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+</div>
+</div>
+<div class="fragment">
+<h3 id="note-1">Note</h3>
+<p>Use the former for interactive exploration in the REPL,<br> the
+latter for scripts.</p>
+</div>
+</section>
+<section id="every-command-can-operate-on-a-subset-of-rows"
+class="slide level2">
+<h2>Every command can operate on a subset of rows</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@keep</span> <span class="pp">@if</span> !<span class="fu">ismissing</span>(distance)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@replace</span> distance <span class="op">=</span> <span class="fl">5</span> <span class="pp">@if</span> distance <span class="op">&lt;</span> <span class="fl">5</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="pp">@regress</span> <span class="fu">log</span>(trade) <span class="fu">log</span>(distance)<span class="op">↩</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@if</span> distance <span class="op">&gt;</span> <span class="fl">100</span>, robust</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="pp">@collapse</span> mean_distance <span class="op">=</span> <span class="fu">mean</span>(distance)<span class="op">↩</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@if</span> distance <span class="op">&lt;</span> <span class="fl">100</span></span></code></pre></div>
+</div><div class="column">
+<div class="fragment">
+<h3 id="note-2">Note</h3>
+<ol type="1">
+<li>Useful for quick data exploration</li>
+<li>In <code>@if</code>, <code>missing</code> is <code>false</code></li>
+<li><code>@replace x = 4.99 @if x == 5</code> changes
+<code>eltype</code></li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="handling-missing-values" class="slide level2">
+<h2>Handling missing values</h2>
+</section>
+<section id="handling-missing-values-1" class="slide level2">
+<h2>Handling missing values</h2>
+<div class="columns">
+<div class="column-wide">
+<p>Given the DataFrame on the right, can you guess the output of</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@collapse</span> sum_x <span class="op">=</span> <span class="fu">sum</span>(x)</span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a> Row │ sum_x</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>─────┼───────</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │     <span class="fl">7</span></span></code></pre></div>
+</div>
+</div><div class="column-narrow">
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fl">4</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> Row │ x</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span>?</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>─────┼─────────</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │       <span class="fl">1</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │       <span class="fl">2</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ <span class="cn">missing</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   <span class="fl">4</span> │       <span class="fl">4</span></span></code></pre></div>
+</div>
+</div>
+</section>
+<section id="handling-missing-values-2" class="slide level2">
+<h2>Handling missing values</h2>
+<div class="columns">
+<div class="column-wide">
+<p>Given the DataFrame on the right, can you guess the output of</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@keep</span> <span class="pp">@if</span> x <span class="op">&lt;</span> <span class="fl">3</span></span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span><span class="op">×</span><span class="fl">1</span> SubDataFrame</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a> Row │ x</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span>?</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>─────┼────────</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │      <span class="fl">1</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │      <span class="fl">2</span></span></code></pre></div>
+</div>
+</div><div class="column-narrow">
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fl">4</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a> Row │ x</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span>?</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>─────┼─────────</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │       <span class="fl">1</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │       <span class="fl">2</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ <span class="cn">missing</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>   <span class="fl">4</span> │       <span class="fl">4</span></span></code></pre></div>
+</div>
+</div>
+</section>
+<section id="proper-data-structures" class="slide level2">
+<h2>Proper data structures</h2>
+<div class="columns">
+<div class="column-wide">
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@generate</span> n_terms <span class="op">=</span> <span class="fu">length</span>.(<span class="fu">split</span>(text, <span class="st">&quot;,&quot;</span>))</span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">2</span> DataFrame</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a> Row │ text    n_terms</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">String</span>  <span class="dt">Int64</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>─────┼─────────────────</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │ a,b           <span class="fl">2</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │ c,d,<span class="cn">e</span>         <span class="fl">3</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ f             <span class="fl">1</span></span></code></pre></div>
+</div>
+</div><div class="column-narrow">
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a> Row │ text</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">String</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>─────┼────────</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │ a,b</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │ c,d,<span class="cn">e</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ f</span></code></pre></div>
+</div>
+</div>
+</section>
+<section id="user-defined-functions" class="slide level2">
+<h2>User-defined functions</h2>
+<div class="columns">
+<div class="column-wide">
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count_terms</span>(text) <span class="op">=</span> <span class="fu">length</span>(<span class="fu">split</span>(text, <span class="st">&quot;,&quot;</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">count_terms</span>(x) <span class="op">=</span> <span class="fu">sum</span>(<span class="fu">count_terms</span>.(x))</span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@generate</span> n_terms <span class="op">=</span> <span class="fu">count_terms</span>.(text)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">2</span> DataFrame</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a> Row │ text    n_terms</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">String</span>  <span class="dt">Int64</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>─────┼─────────────────</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │ a,b           <span class="fl">2</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │ c,d,<span class="cn">e</span>         <span class="fl">3</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ f             <span class="fl">1</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@collapse</span> sum_terms <span class="op">=</span> <span class="fu">DNV</span>(<span class="fu">count_terms</span>(text))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a> Row │ sum_terms</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">Int64</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>─────┼───────────</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │         <span class="fl">6</span></span></code></pre></div>
+</div>
+</div><div class="column-narrow">
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">1</span> DataFrame</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a> Row │ text</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>     │ <span class="dt">String</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>─────┼────────</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>   <span class="fl">1</span> │ a,b</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>   <span class="fl">2</span> │ c,d,<span class="cn">e</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>   <span class="fl">3</span> │ f</span></code></pre></div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="roadmap" class="title-slide slide level1">
+<h1>Roadmap</h1>
+
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add Kezdi</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>   Resolving package versions<span class="op">...</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>   Installed Kezdi ─ v0<span class="fl">.4.7</span></span></code></pre></div>
+<p><a href="https://codedthinking.github.io/Kezdi.jl/stable/"><img
+data-src="https://img.shields.io/badge/docs-stable-blue.svg"
+alt="Stable" /></a> <a
+href="https://codedthinking.github.io/Kezdi.jl/dev/"><img
+data-src="https://img.shields.io/badge/docs-dev-blue.svg"
+alt="Dev" /></a> <a
+href="https://github.com/codedthinking/Kezdi.jl/actions/workflows/CI.yml?query=branch%3Amain"><img
+data-src="https://github.com/codedthinking/Kezdi.jl/actions/workflows/CI.yml/badge.svg?branch=main"
+alt="Build Status" /></a> <a
+href="https://codecov.io/gh/codedthinking/Kezdi.jl"><img
+data-src="https://codecov.io/gh/codedthinking/Kezdi.jl/branch/main/graph/badge.svg"
+alt="Coverage" /></a></p>
+</section>
+<section id="roadmap-1" class="slide level2">
+<h2>Roadmap</h2>
+<h3 id="statistics">Statistics</h3>
+<ul>
+<li>Current dependency is FixedEffectModels.jl (<span class="citation"
+data-cites="matthieugomez">@matthieugomez</span>)</li>
+<li>We will add support for nonlinear models (GLM.jl) with many fixed
+effects (GLFixedEffectModels.jl)</li>
+<li>Checks against Stata edge cases (multicollinearity, missing
+values)</li>
+<li>RegressionTables.jl or SummaryTables.jl for output formatting</li>
+<li>Wald testing</li>
+</ul>
+<h3 id="data-wrangling">Data wrangling</h3>
+<ul>
+<li>Obvious next steps: <code>@merge</code>, <code>@append</code>,
+<code>@reshape</code></li>
+<li>Annotating variable names and values: <code>@label</code>,
+<code>@encode</code></li>
+<li>Variable name handling</li>
+<li>Performance improvements (<strong>help needed</strong>):
+CSV.jl/CSVFiles.jl, StatFiles.jl</li>
+</ul>
+</section>
+<section id="programming-convenience" class="slide level2">
+<h2>Programming convenience</h2>
+<ul>
+<li>Set risk tolerance for users (Preferences.jl?)</li>
+<li>Allow for variable to be passed into <code>@with</code></li>
+</ul>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode julia"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@with</span> <span class="fu">scalars</span>(min_dist, y) df <span class="cf">begin</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@replace</span> distance <span class="op">=</span> min_dist <span class="pp">@if</span> distance <span class="op">&lt;</span> min_dist</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> y <span class="op">=</span> <span class="fl">2000</span><span class="op">:</span><span class="fl">2020</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@regress</span> <span class="fu">log</span>(trade) <span class="fu">log</span>(distance) <span class="pp">@if</span> year <span class="op">==</span> y, robust</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+</section></section>
+<section>
+<section id="acknowledgements" class="title-slide slide level1">
+<h1>Acknowledgements</h1>
+
+</section>
+<section id="inspiration" class="slide level2">
+<h2>Inspiration</h2>
+<div class="columns">
+<div class="column">
+<h3 id="tidier.jl">Tidier.jl</h3>
+<p><img
+data-src="https://raw.githubusercontent.com/TidierOrg/Tidier.jl/main/docs/src/assets/Tidier_jl_logo.png"
+style="width:30.0%" /></p>
+<p>Tidyverse <span class="math inline">→</span> Julia</p>
+</div><div class="column">
+<h3 id="douglass.jl">Douglass.jl</h3>
+<p>Johannes Boehm</p>
+<p>Stata <span class="math inline">→</span> Julia</p>
+</div>
+</div>
+</section>
+<section id="acknowledgements-1" class="slide level2">
+<h2>Acknowledgements</h2>
+<table>
+<thead>
+<tr class="header">
+<th><strong>Who</strong></th>
+<th><strong>What</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="bkamins">@bkamins</span></td>
+<td>DataFrames.jl</td>
+</tr>
+<tr class="even">
+<td><span class="citation"
+data-cites="matthieugomez">@matthieugomez</span></td>
+<td>FixedEffectModels.jl</td>
+</tr>
+<tr class="odd">
+<td><span class="citation"
+data-cites="davidanthoff">@davidanthoff</span></td>
+<td>StatFiles.jl</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="nalimilan">@nalimilan</span></td>
+<td>FreqTables.jl</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="why-kezdi" class="slide level2">
+<h2>Why Kezdi?</h2>
+<div class="columns">
+<div class="column">
+<h3 id="gábor-kézdi-1971-2021">Gábor Kézdi (1971-2021)</h3>
+<p><img data-src="assets/kezdi.jpg" /></p>
+<p>kezdigabor.life</p>
+</div><div class="column">
+<h3 id="section-3"></h3>
+<p><img data-src="assets/gabors-data-analysis.png" /></p>
+<p>gabors-data-analysis.com</p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="feedback-and-contributions-welcome"
+class="title-slide slide level1">
+<h1>Feedback and contributions welcome</h1>
+
+</section>
+<section id="feedback-and-contributions-welcome-1" class="slide level2">
+<h2>Feedback and contributions welcome</h2>
+<p><span class="citation"
+data-cites="korenmiklos">@korenmiklos</span></p>
+<p><span class="citation"
+data-cites="gergeleyattilakiss">@gergeleyattilakiss</span></p>
+<p>thnk.ng/kezdi.jl</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
